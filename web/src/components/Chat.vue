@@ -51,7 +51,13 @@ export default {
   }),
   methods: {
     enter: function () {
-      const chatUrl = "ws://localhost:8090/channel";
+      this.text = "";
+      
+      if (!this.user || !this.room) {
+        this.text += "connect successfully \n";
+        return;
+      }
+      const chatUrl = `ws://localhost:8090/channel?user=${this.user}&room=${this.room}`;
       const ws = new WebSocket(chatUrl);
       const vm = this;
       

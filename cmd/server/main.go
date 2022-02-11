@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"github.com/key-hh/chat-example/pkg/message"
 	"log"
 	"net/http"
 
@@ -12,7 +14,15 @@ const (
 )
 
 func main() {
-	ch := &handler.ChannelHandler{}
+	ctx := context.Background()
+
+	pubsub := message.NewRedisPubSub()
+	if err := pubsub.Init(ctx); err != nil {
+		log.Fatal(err)
+	}
+	defer pubsub.Close()
+
+	ch := &handler.ChannelHandler{PubSub: pubsub}
 	ch.Init()
 
 	http.Handle("/channel", ch)
